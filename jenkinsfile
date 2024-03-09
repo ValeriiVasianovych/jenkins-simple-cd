@@ -1,0 +1,43 @@
+pipeline {
+    agent { label 'Pipeline-Agent'}
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+    }
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('valerii-dockerhub')
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/ValeriiVasianovych/Docker-CI-CD.git'
+                
+            }
+            
+        }
+        stage('Build') {
+            steps {
+                script {
+                    dir('/home/jenkins/workspace/Pipeline-Docker') {
+                        sh 'ls -al'
+                        sh 'docker build -t valeriivasianovych/docker-nginx:latest .'
+                    }
+                }
+            }
+        }
+        stage('Login') {
+            steps {
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Push') {
+            steps {
+                sh 'docker push valeriivasianovych/docker-nginx:latest'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}
