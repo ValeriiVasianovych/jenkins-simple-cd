@@ -1,4 +1,4 @@
-# Pull App, create Docker image and push image to DockerHub
+# Pull repo, create Docker image and push image to DockerHub
 
 This project automates the process of cloning a Git repository using Jenkins, building a Docker image, and pushing it to DockerHub. It streamlines the deployment workflow, ensuring efficiency and reliability.
 
